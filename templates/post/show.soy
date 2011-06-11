@@ -1,0 +1,29 @@
+{namespace post}
+
+/**
+ * Show a post.
+ * @param post The post.
+ * @param comment_list Comments list of the post.
+ */
+{template .show}
+<html>
+<body>
+<h1>Show a post</h1>
+<br/>
+<h2>{$post.title}</h2>
+<br/>
+{$post.body}
+<br/><br/>
+<h3>Comments</h3>
+{foreach $comment in $comment_list}
+  <div><h3>{$comment.title}</h3></div>
+  <div>{$comment.body}<br/><br/>
+{/foreach}
+<br/>
+<a href="/post/{$post.id}/comment/new">Add comment</a>
+
+<br/><br/>
+<a href="/post">Back</a>
+</body>
+</html>
+{/template}

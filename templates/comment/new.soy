@@ -1,0 +1,19 @@
+{namespace comment}
+
+/**
+ * Create new comment.
+ * @param post The post.
+ */
+{template .new}
+<h1>Add comment</h1>
+Post: {$post.title}
+<br/><br/>
+<form action="/post/{$post.id}/comment/create" method="post">
+Title: <input type="text" name="title" id="title" /><br/>
+Text: <textarea id="text" name="text" rows="10" cols="30">
+      </textarea> <br/>
+<input type="submit" value="Create" />
+</form> 
+<br/>
+<a href="/post/show/{$post.id}">Back</a>
+{/template}

@@ -1,0 +1,17 @@
+{namespace post}
+
+/**
+ * Create new post.
+ */
+{template .new}
+<h1>Create a new post</h1>
+<br/>
+<form action="/post/create" method="post">
+Title: <input type="text" name="title" id="title" /><br/>
+Text: <textarea id="text" name="text" rows="10" cols="30">
+      </textarea> <br/>
+<input type="submit" value="Create" />
+</form> 
+<br/>
+<a href="/post">Back</a>
+{/template}

@@ -1,0 +1,29 @@
+{namespace user}
+
+/**
+ * Login the user.
+ */
+{template .login_page}
+<h1>Login</h1>
+<br/>
+
+<form action="/login" method="post">
+<table>
+<tr>
+<td>Name: </td>
+<td><input type="text" name="name" id="name" value=""/></td>
+</tr>
+
+<tr>
+<td>Password:</td>
+<td><input type="password" name="password" id="password" value=""/></td>
+</tr>
+</table>
+<input type="submit" value="Login" />
+
+</form> 
+
+<br/>
+<a href="/">Back</a>
+{/template}
+

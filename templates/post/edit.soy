@@ -1,0 +1,44 @@
+{namespace post}
+
+/**
+ * Edit a post.
+ * @param post The post.
+ * @param comment_list Comments list of the post.
+ */
+{template .edit}
+<h1>Edit a post</h1>
+<br/>
+
+<form action="/post/update" method="post">
+<input type="hidden" name="id" id="id" value="{$post.id}"/>
+Title: <input type="text" name="title" id="title" value="{$post.title}"/><br/>
+Text: <textarea id="body" name="body" rows="10" cols="30">
+	{$post.body}
+      </textarea> <br/>
+<input type="submit" value="Update" />
+</form> 
+<br/>
+<h3>Comments</h3>
+{foreach $comment in $comment_list}
+  <div><h3>{$comment.title}</h3></div>
+  <div>{$comment.body}
+
+<br/>
+<script type="text/javascript">
+function conf{$comment.id}() {lb}
+ var answer = confirm ("Are you sure?");
+ if (answer)
+   window.location="/post/{$post.id}/comment/delete/{$comment.id}"
+{rb}
+</script>  
+
+<a href="#" onclick="conf{$comment.id}();">Delete</a> 
+
+  <br/><br/>
+{/foreach}
+<br/>
+
+<br/>
+<a href="/post">Back</a>
+{/template}
+

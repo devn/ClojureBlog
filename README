@@ -1,0 +1,96 @@
+# Blog description
+
+The blog is written in the Rails-like style. It utilizes the following principles:
+1) MVC architecture;
+2) RESTfull design;
+3) Convention over configuration;
+4) DRY (Don't repeat yourself);
+5) Instant gratification.
+
+## Architecture overview
+
+The directory structure is the following:
+blog/templates -- root directory for views. It contains subdirrectories for each
+		  entity (post, comment, user) and the common application templates
+		  located in the dirrectory app.
+blog/src/blog/system -- contains the common functionality (utils.clj), databse
+		  connectivity options (db.clj), and the router (routes.clj).
+blog/src/blog/controllers -- directory for controllers.
+blog/src/blog/model -- directory for models.
+
+Controller here contains all the business logic. It accepts the user input,
+interacts with the database and renders a response (or redirects to another page).
+
+Model is just a means of interecting with the database. It contains functions for
+confinient fetching the entities, creating/updating/deleting them.
+
+Views are implemented using the clj-soy library which is a wrapper over the
+Google Closure Templates. More documentation and usage examples are here:
+http://code.google.com/closure/templates .
+
+## Application description
+
+The code contains many comments that's why there is not so much description here.
+Just follow some advises.
+
+1) Do not dig deeply into system/utils.clj. It is a bit complicated and should be
+used "as-is". For those who are interested in it -- it has good comments and usage examples.
+
+2) Define routes for your RESTfull action using the "route" macro:
+E.g. (route GET "/post/show/:id" post/show)
+It has the following syntax: (route <GET/POST> <page_address> <controller_function>).
+Define all the URL-parameters as keywords (:id -- is the parameter here).
+
+3) Define the controller actions using the "defaction" macro. It automates destructuring
+of the parameters. For example:
+(defaction show [id]
+	. . .)
+In this case there are three local variables available inside the created function show:
+ * session -- hash-map which holds the session;
+ * params -- hash-map which holds all the user parameters (URL parameters and POST-ed html-form parameters);
+ * id -- destructured id parameter.
+You don't need to destructure the parameters manually. The "defaction" macro will process all the parameters
+in the vector and destructure them automatically.
+
+4) Use the "render-action" macro to render a RESTfull action. It has the following format:
+(render-action <entity>#<action> <parameters>)
+For example:
+(render-action post#show
+	 {:post (post/fetch id)
+	  :comment_list (comment/fetch-list id)}))
+It will automatically locate the template "templates/post/show.soy", decorate it with the
+application template "templates/app/post.soy" and provide the parameters there.
+
+5) Use the "map->soy" macro to provide any nested paremeters to the template. Example:
+    (render-action post#index
+		   {:post_list (post/fetch-list)
+		    :extra (map->soy {:editable editable})})))
+Here :extra holds a nested hash-map. The clj-soy library can't process it directly,
+because the map must contain strings as keys instead of keywords. Thus the map
+{:a 1, :b 2} should be transformed to {"a" 1, "b" 2}. The macro "map->soy" does this
+transformation.
+
+6) Use the "struct-map->soy" macro to transform the database data to the clj-soy-friendly
+format. Example:
+
+(defn fetch [id]
+  (struct-map->soy
+   (sql/with-connection *db*
+     (sql/with-query-results post
+       [(str "SELECT * FROM post where id = " id)]
+       (first (doall post))))))
+
+
+## Usage
+1) Create mysql database. The scripts are located in blog/sql/db.sql.
+2) Download an install the mysql-connector-java (http://dev.mysql.com/downloads/connector/j/)
+ as a maven artifact. Just run the "lein deps" command,
+it will fail and tell you what to do to install the mysql-connector-java.
+3) Run the application:
+$ lein deps
+$ lein ring server
+
+## License
+Copyright (C) 2011 by Dmitry Bushenko
+
+Distributed under the Eclipse Public License, the same as Clojure.
